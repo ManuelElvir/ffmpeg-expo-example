@@ -1,0 +1,62 @@
+{
+  "expo": {
+    "name": "ffmpeg-expo-example",
+    "slug": "ffmpeg-expo-example",
+    "version": "1.0.0",
+    "orientation": "portrait",
+    "icon": "./assets/icon.png",
+    "userInterfaceStyle": "light",
+    "splash": {
+      "image": "./assets/splash.png",
+      "resizeMode": "contain",
+      "backgroundColor": "#ffffff"
+    },
+    "assetBundlePatterns": [
+      "**/*"
+    ],
+    "ios": {
+      "supportsTablet": true
+    },
+    "android": {
+      "adaptiveIcon": {
+        "foregroundImage": "./assets/adaptive-icon.png",
+        "backgroundColor": "#ffffff"
+      },
+      "package": "com.manuelelvir.ffmpegexpoexample"
+    },
+    "web": {
+      "favicon": "./assets/favicon.png"
+    },
+    "description": "Simple example of usage of ffmpeg-react-native",
+    "githubUrl": "https://github.com/ManuelElvir/ffmpeg-expo-example",
+    "plugins": [
+      [
+        "expo-build-properties",
+        {
+          "android": {
+            "compileSdkVersion": 31,
+            "targetSdkVersion": 31,
+            "minSdkVersion": 24,
+            "buildToolsVersion": "31.0.0",
+            "packagingOptions": {
+              "pickFirst": [
+                "lib/arm64-v8a/libc++_shared.so",
+                "lib/armeabi-v7a/libc++_shared.so",
+                "lib/x86/libc++_shared.so",
+                "lib/x86_64/libc++_shared.so"
+              ]
+            }
+          },
+          "ios": {
+            "deploymentTarget": "13.0"
+          }
+        }
+      ]
+    ],
+    "extra": {
+      "eas": {
+        "projectId": "0d7b9441-c70f-4900-8007-e19ee8e8abd5"
+      }
+    }
+  }
+}
