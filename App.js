@@ -20,8 +20,7 @@ const getResultPath = async () => {
   }
 
   await ensureDirExists();
-
-  return `${videoDir}file2.mp4`;
+  return `${videoDir}-${(Math.random() + 1).toString(36).substring(7)}.mp4`;
 }
 
 const getSourceVideo = async () => {
@@ -29,10 +28,8 @@ const getSourceVideo = async () => {
   const result = await launchImageLibraryAsync({
     mediaTypes: MediaTypeOptions.Videos
   })
-
   console.log('result', result);
-
-  return (result.canceled) ? null : result.uri
+  return (result.canceled) ? null : {sourceVideo: result.uri, height: result.height, width: result.width}
 }
 
 export default function App() {
@@ -49,9 +46,26 @@ export default function App() {
     setResult(() => '');
 
     const resultVideo = await getResultPath();
-    const sourceVideo = await getSourceVideo();
+    const {sourceVideo, height, width} = await getSourceVideo();
+    // let cWidth = 720, cHeight = 480
+    // if (width>720 && height>480) {
+    //   if(width/height >= 720/480) {
+    //     cWidth = width*480/height
+    //   }
+    //   else{
+    //     cHeight = height*720/width
+    //   }
+    // }
+    // console.log(`${width}/${height} = ${cWidth}x${cHeight}`);
 
-    console.log('sourceVideo', sourceVideo);
+    // const x =  Math.round((width - cWidth) / 2)
+    // const y =  Math.round((height - cHeight) / 2)
+
+    const x =  Math.round((width - 720) / 2)
+    const y =  Math.round((height - 480) / 2)
+
+    console.log(`start at = ${x}:${y}`);
+
 
     if (!sourceVideo) {
       setLoading(() => false);
@@ -60,19 +74,22 @@ export default function App() {
     setSource(() => sourceVideo)
 
     const ffmpegSession = await FFmpegKit
-      .execute(`-i ${sourceVideo} -c:v mpeg4 -y ${resultVideo}`);
+      // .execute(`-i ${sourceVideo} -c:v mpeg4 -ss 00:00:10 -t 00:00:30 -filter:v "crop=720:480:0:0" -s 720x480 -c:a copy -y ${resultVideo}`);
+      .execute(`-i ${sourceVideo} -c:v mpeg4 -ss 00:00:10 -t 00:00:30 -s 720x480 -c:a copy -y ${resultVideo}`);
+      // .execute(`-i ${sourceVideo} -c:v mpeg4 -ss 00:00:10 -t 00:00:30 -filter:v "crop=720:480:${x}:${y}" -y ${resultVideo}`);
 
     const result = await ffmpegSession.getReturnCode();
 
     if (ReturnCode.isSuccess(result)) {
       setLoading(() => false);
       setResult(() => resultVideo);
+      console.log('resultVideo', resultVideo)
     } else {
       setLoading(() => false);
       console.error(result);
     }
 
-    console.log(sourceVideo)
+    console.log('sourceVideo', sourceVideo)
   }
 
   return (
